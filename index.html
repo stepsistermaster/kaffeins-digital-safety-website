@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Roblox Executor Safety Index</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #0b0f1a;
+      --card: #141a2e;
+      --text: #e6e9f0;
+      --muted: #9aa4c7;
+      --good: #2ecc71;
+      --bad: #e74c3c;
+      --unknown: #f1c40f;
+      --accent: #6c8cff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(180deg, #0b0f1a, #070a12);
+      color: var(--text);
+    }
+
+    header {
+      padding: 40px 20px 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0 0 10px;
+      font-size: 2.2rem;
+      color: white;
+    }
+
+    header p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 700px;
+      margin-inline: auto;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 30px auto 80px;
+      padding: 0 20px;
+    }
+
+    .search-box {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+
+    .search-box input {
+      flex: 1;
+      padding: 14px 16px;
+      border-radius: 10px;
+      border: 1px solid #1f2540;
+      background: var(--card);
+      color: var(--text);
+      font-size: 1rem;
+      outline: none;
+    }
+
+    .search-box input::placeholder {
+      color: #6f78a8;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, #151c35, #10162b);
+      border: 1px solid #1f2540;
+      border-radius: 14px;
+      padding: 18px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+
+    .card h3 {
+      margin: 0 0 6px;
+      font-size: 1.2rem;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .safe { background: rgba(46, 204, 113, 0.15); color: var(--good); }
+    .malicious { background: rgba(231, 76, 60, 0.15); color: var(--bad); }
+    .unknown { background: rgba(241, 196, 15, 0.15); color: var(--unknown); }
+
+    .card p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .details {
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px 20px;
+      color: #6f78a8;
+      font-size: 0.8rem;
+    }
+
+    footer span {
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Roblox Executor Safety Index</h1>
+  <p>
+    A community-driven database documenting Roblox executors, their behavior,
+    and whether they are <b>safe</b>, <b>malicious</b>, or <b>confirmed malware</b>.
+  </p>
+</header>
+
+<div class="container">
+  <div class="search-box">
+    <input id="search" type="text" placeholder="Search for an executor (e.g. Krnl, Fluxus, Electron...)" />
+  </div>
+
+  <div id="executorGrid" class="grid"></div>
+</div>
+
+<footer>
+  Built for educational & security awareness purposes · <span>Always verify sources</span>
+</footer>
+
+<script>
+  const executors = [
+    {
+      name: "Krnl",
+      status: "malicious",
+      summary: "Popular free executor often bundled with adware and suspicious installers.",
+      details: "Known to include aggressive installers, system modifications, and unwanted background processes. Not open-source."
+    },
+    {
+      name: "Fluxus",
+      status: "malicious",
+      summary: "Executor with history of bundled software and shady update mechanisms.",
+      details: "Multiple reports of antivirus detections and obfuscated binaries."
+    },
+    {
+      name: "Electron",
+      status: "unknown",
+      summary: "Closed-source executor with limited transparency.",
+      details: "No public source code or independent audits available. Use with caution."
+    },
+    {
+      name: "Script-Ware",
+      status: "safe",
+      summary: "Paid executor with relatively better reputation.",
+      details: "Still closed-source, but fewer reports of malware compared to free executors."
+    }
+  ];
+
+  const grid = document.getElementById('executorGrid');
+  const search = document.getElementById('search');
+
+  function render(list) {
+    grid.innerHTML = '';
+    list.forEach(exec => {
+      const card = document.createElement('div');
+      card.className = 'card';
+
+      card.innerHTML = `
+        <span class="status ${exec.status}">${exec.status.toUpperCase()}</span>
+        <h3>${exec.name}</h3>
+        <p>${exec.summary}</p>
+        <div class="details">${exec.details}</div>
+      `;
+
+      grid.appendChild(card);
+    });
+  }
+
+  search.addEventListener('input', () => {
+    const value = search.value.toLowerCase();
+    const filtered = executors.filter(e => e.name.toLowerCase().includes(value));
+    render(filtered);
+  });
+
+  render(executors);
+</script>
+
+</body>
+</html>
